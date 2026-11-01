@@ -132,30 +132,14 @@
   function wrapXhrInstance(xhr: any): void {
     if (!xhr || xhr.__MediaGrabberRelayWrapped || typeof xhr.open !== 'function') return;
     xhr.__MediaGrabberRelayWrapped = true;
-    let report = () => {};
-    for (const property of ['onload', 'onreadystatechange', 'onloadend']) {
-      try {
-        let handler: any;
-        Object.defineProperty(xhr, property, {
-          configurable: true,
-          get: () => handler,
-          set: (value: any) => {
-            handler = typeof value === 'function'
-              ? function(this: any, event: any): any {
-                report();
-                return value.call(this, event);
-              }
-              : value;
-          }
-        });
-      } catch {}
-    }
+    // Observe independently: shadowing onload/onreadystatechange/onloadend prevents
+    // their native setters from registering the page's handlers with the browser.
     const originalOpen = xhr.open;
     xhr.open = function(method: string, url: string, ...args: any[]): any {
       const originalUrl = String(url || '');
       const generation = pageGeneration;
       const startTime = performance.now();
-      report = () => reportMediaUrlMapping(originalUrl, startTime, xhr.responseURL, generation);
+      const report = () => reportMediaUrlMapping(originalUrl, startTime, xhr.responseURL, generation);
       try {
         xhr.addEventListener('loadend', report, { once: true });
       } catch {}

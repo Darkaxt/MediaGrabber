@@ -2,6 +2,7 @@ param(
     [Parameter(Mandatory)][string]$ReleaseDirectory,
     [Parameter(Mandatory)][string]$ExtensionDirectory,
     [Parameter(Mandatory)][string]$ScratchDirectory,
+    [Parameter(Mandatory)][string]$ExpectedVersion,
     [switch]$ExtensionIsDisabled
 )
 $ErrorActionPreference = 'Stop'
@@ -52,5 +53,5 @@ foreach ($pair in @(
 }
 Expand-Archive -LiteralPath (Join-Path $releaseRoot 'MediaGrabber-extension.zip') -DestinationPath $extensionRoot -Force
 $manifest = Get-Content -LiteralPath (Join-Path $extensionRoot 'manifest.json') -Raw | ConvertFrom-Json
-if ($manifest.version -ne '1.1.2') { throw 'Installed extension version is unexpected.' }
+if ($manifest.version -ne $ExpectedVersion) { throw 'Installed extension version is unexpected.' }
 Write-Output "Installed MediaGrabber $($manifest.version); preserved extension path $extensionRoot"
