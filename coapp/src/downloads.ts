@@ -5,7 +5,7 @@ import * as fs from 'fs';
 import * as http from 'http';
 import * as https from 'https';
 import * as path from 'path';
-import * as os from 'os';
+import { getDefaultDownloadDir } from './paths';
 import { PassThrough } from 'stream';
 import rpc from './rpc';
 
@@ -45,8 +45,6 @@ function requestStream(url: string, options: any, redirects = 0): PassThrough {
   return output;
 }
 
-const defaultDownloadFolder = path.join(os.homedir(), 'Downloads');
-
 let currentDownloadId = 0;
 const downloads: Record<number, any> = {};
 
@@ -57,7 +55,7 @@ function cleanupEntry(downloadId: number): void {
 rpc.listen({
   'downloads.download': async (options: any = {}) => {
     const filename = path.join(
-      options.directory || defaultDownloadFolder,
+      options.directory || getDefaultDownloadDir(),
       options.filename || 'download'
     );
 
@@ -160,4 +158,4 @@ rpc.listen({
   }
 });
 
-console.error('[MediaGrabber CoApp] Downloads module loaded (default folder: %s)', defaultDownloadFolder);
+console.error('[MediaGrabber CoApp] Downloads module loaded');

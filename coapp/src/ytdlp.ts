@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import * as os from 'os';
 import rpc from './rpc';
-import { getRuntimeBinary, getRuntimeRoots } from './paths';
+import { getDefaultDownloadDir, getRuntimeBinary, getRuntimeRoots } from './paths';
 
 const ytdlpChildren = new Map<number, ChildProcess>();
 const to_kill = new Set<ChildProcess>();
@@ -247,7 +247,7 @@ rpc.listen({
     args: string[] = [],
     options: { progressTime?: number; startHandler?: any; outputDir?: string; filename?: string } = {}
   ) => {
-    const outputDir = options.outputDir || path.join(os.homedir(), 'Downloads');
+    const outputDir = options.outputDir || getDefaultDownloadDir();
     const outputTemplate = path.join(outputDir, options.filename || '%(title)s.%(ext)s');
 
     const baseArgs = [

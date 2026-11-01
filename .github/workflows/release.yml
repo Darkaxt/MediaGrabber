@@ -29,6 +29,7 @@ jobs:
           $version = $env:GITHUB_REF_NAME.TrimStart('v')
           $env:MEDIA_GRABBER_VERSION = $version
           npm run build
+          node --test coapp/test/download-folder.cjs
           npm run package:extension
 
       - name: Prepare pinned runtime binaries
@@ -44,7 +45,7 @@ jobs:
           Copy-Item (Join-Path $ffmpegRoot.FullName 'bin/ffmpeg.exe') 'release-runtime/ffmpeg.exe'
           Copy-Item (Join-Path $ffmpegRoot.FullName 'bin/ffprobe.exe') 'release-runtime/ffprobe.exe'
 
-          Invoke-WebRequest -Uri 'https://github.com/yt-dlp/yt-dlp/releases/download/2026.07.04/yt-dlp.exe' -OutFile 'release-runtime/yt-dlp.exe'
+          Invoke-WebRequest -Uri 'https://github.com/yt-dlp/yt-dlp/releases/download/2026.10.26/yt-dlp.exe' -OutFile 'release-runtime/yt-dlp.exe'
 
           Move-Item 'release-runtime/ffmpeg.exe' 'release/ffmpeg-win-x64.exe'
           Move-Item 'release-runtime/ffprobe.exe' 'release/ffprobe-win-x64.exe'

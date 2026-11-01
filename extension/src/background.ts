@@ -787,15 +787,11 @@ async function ensureCoAppConnected(): Promise<void> {
     await nativeClient.connect();
   }
 
-  if (!defaultDownloadDir) {
-    try {
-      const info = await nativeClient.info();
-      defaultDownloadDir = info?.downloadDir || '';
-      coappPlatform = info?.platform || '';
-    } catch (error) {
-      console.warn('[MediaGrabber] Failed to read CoApp info:', error);
-    }
-  }
+  // Resolve again before each download so a Windows folder redirection is respected.
+  const info = await nativeClient.info();
+  if (!info?.downloadDir) throw new Error('The system Downloads folder is unavailable.');
+  defaultDownloadDir = info.downloadDir;
+  coappPlatform = info.platform || '';
 }
 
 function sanitizeFilename(name: string): string {

@@ -3,6 +3,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
+import { getDefaultDownloadDir } from './paths';
 
 export interface FileInfo {
   path: string;
@@ -125,14 +126,6 @@ export class FileOperations {
    * Get the default download directory
    */
   getDefaultDownloadDir(): string {
-    const home = process.env.HOME || process.env.USERPROFILE;
-    
-    if (process.platform === 'win32') {
-      return path.join(home!, 'Downloads');
-    } else if (process.platform === 'darwin') {
-      return path.join(home!, 'Downloads');
-    } else {
-      return path.join(home!, 'Downloads');
-    }
+    return getDefaultDownloadDir();
   }
 }

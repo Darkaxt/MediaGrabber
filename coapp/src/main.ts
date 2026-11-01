@@ -9,17 +9,17 @@ import './ytdlp';
 import './downloads';
 import rpc from './rpc';
 import * as os from 'os';
-import * as path from 'path';
+import { getDefaultDownloadDir } from './paths';
 
 rpc.listen({
   ping: (arg: any) => arg,
 
   info: () => ({
-    version: '1.1.1',
+    version: '1.1.2',
     platform: process.platform,
     arch: process.arch,
     home: os.homedir() || process.env.HOME || process.env.USERPROFILE || '',
-    downloadDir: path.join(os.homedir() || process.env.HOME || process.env.USERPROFILE || '', 'Downloads')
+    downloadDir: getDefaultDownloadDir()
   }),
 
   quit: () => {
